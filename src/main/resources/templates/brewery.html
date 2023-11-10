@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Bewery Review System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/index}">BRS</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/logout}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<br/><br/>
+<div class="container">
+    <div class="row">
+        <h1 class="text-center"> Bewery Review System </h1>
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark" style="text-align: center">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>BREWERY_TYPE</th>
+                <th>ADDRESS_1</th>
+                <th>ADDRESS_2</th>
+                <th>ADDRESS_3</th>
+                <th>CITY</th>
+                <th>STATE_PROVINCE</th>
+                <th>POSTAL_CODE</th>
+                <th>COUNTRY</th>
+            </tr>
+
+            </thead>
+            <tbody>
+            <tr th:each="breweries :${breweries}">
+                <td th:text="${breweries.id}"></td>
+                <td th:text="${breweries.name}"></td>
+                <td th:text="${breweries.brewery_type}"></td>
+                <td th:text="${breweries.address_1}"></td>
+                <td th:text="${breweries.address_2}"></td>
+                <td th:text="${breweries.address_3}"></td>
+                <td th:text="${breweries.city}"></td>
+                <td th:text="${breweries.state_province}"></td>
+                <td th:text="${breweries.postal_code}"></td>
+                <td th:text="${breweries.country}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark" style="text-align: center">
+            <tr>
+                <th>LONGITUDE</th>
+                <th>LATITUDE</th>
+                <th>PHONE</th>
+                <th>WEBSITE_URL</th>
+                <th>CURRENT RATING</th>
+                <th>STATE</th>
+                <th>STREET</th>
+            </tr>
+
+            </thead>
+            <tbody>
+            <tr th:each="breweries :${breweries}">
+                <td th:text="${breweries.longitude}"></td>
+                <td th:text="${breweries.latitude}"></td>
+                <td th:text="${breweries.phone}"></td>
+                <td th:text="${breweries.website_url}"></td>
+                <td><p th:each="rating : ${ratings}" th:if="(${breweries.id} == ${rating.id})"
+                       th:text="${rating.rating}"></p></td>
+                <td th:text="${breweries.state}"></td>
+                <td th:text="${breweries.street}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>Review</tr>
+        </thead>
+        <tbody>
+        <tr th:each = "breweries : ${breweries}">
+            <td>
+                <div class="container">
+                    <div class="row col-md-8 offset-md-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="text-center">Rate Brewery Here</h2>
+                            </div>
+                            <div class="card-body">
+                                <form
+                                        method="post"
+                                        role="form"
+                                        th:action="@{/index/review}"
+                                        th:object="${review}"
+                                >
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Id</label>
+                                        <input
+                                                class="form-control"
+                                                id="*{uuid}"
+                                                name="uuid"
+                                                type="text"
+                                                th:placeholder="${breweries.id}"
+                                                th:value="${breweries.id}"
+                                                readonly="readonly"
+
+                                        />
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Name</label>
+                                        <input
+                                                class="form-control"
+                                                id="*{name}"
+                                                name="name"
+                                                th:placeholder="${breweries.name}"
+                                                th:value="${breweries.name}"
+                                                type="text"
+                                                readonly="readonly"
+
+                                        />
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input
+                                                class="form-control"
+                                                id="*{email}"
+                                                name="email"
+                                                th:value=${#authentication.getName()}
+                                                type="email"
+                                                readonly="readonly"
+                                        />
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Rate :</label>
+                                        <input
+                                                class="form-control"
+                                                id="review"
+                                                name="review"
+                                                placeholder="Rate from 1 to 5"
+                                                th:field="*{review}"
+                                                type="number"
+                                                min="1"
+                                                max="5"
+
+                                        />
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" type="submit">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
